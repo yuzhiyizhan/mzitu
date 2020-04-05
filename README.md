@@ -136,7 +136,7 @@ power management:
 
 6.效果图
 
-![效果图](https://github.com/yuzhiyizhan/mzitu/效果图.png)
+![效果图](https://github.com/yuzhiyizhan/mzitu/blob/master/%E6%95%88%E6%9E%9C%E5%9B%BE.png)
 
 7.本项目配置如下:
 
