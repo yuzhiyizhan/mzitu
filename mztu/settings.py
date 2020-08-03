@@ -12,14 +12,15 @@ BOT_NAME = 'mztu'
 
 SPIDER_MODULES = ['mztu.spiders']
 NEWSPIDER_MODULE = 'mztu.spiders'
-
+# TWISTED_REACTOR = 'twisted.internet.asyncioreactor.AsyncioSelectorReactor'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'mztu (+http://www.yourdomain.com)'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
+
 # 是否启用logging
 # LOG_ENABLED = False
-MEMUSAGE_NOTIFY_MAIL = ['1016682256@qq.com']
+# MEMUSAGE_NOTIFY_MAIL = ['1016682256@qq.com']
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # Scrapy downloader 并发请求(concurrent requests)的最大值
 # CONCURRENT_REQUESTS = 100
@@ -32,25 +33,23 @@ RETRY_TIMES = 5
 # See also autothrottle settings and docs
 DOWNLOAD_DELAY = 0
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS = 32
-CONCURRENT_REQUESTS_PER_DOMAIN = 32
-CONCURRENT_REQUESTS_PER_IP = 32
+CONCURRENT_REQUESTS = 16
+CONCURRENT_REQUESTS_PER_DOMAIN = 16
+CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
 COOKIES_ENABLED = False
-
+TWISTED_REACTOR = 'twisted.internet.asyncioreactor.AsyncioSelectorReactor'
 # Disable Telnet Console (enabled by default)
 # TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Language': 'en',
     'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
     'referer': 'https://www.mzitu.com/japan/',
 }
 # 下载器超时时间(单位: 秒)
-DOWNLOAD_TIMEOUT = 5
+DOWNLOAD_TIMEOUT = 10
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {

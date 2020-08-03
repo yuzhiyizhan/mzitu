@@ -4,12 +4,12 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import time
+import aiohttp
 from time import strftime, localtime
 from faker import Faker
 from scrapy import signals
-from time import sleep
 from loguru import logger
-
 
 
 class MztuSpiderMiddleware(object):
@@ -111,6 +111,7 @@ class UserAgentDownloadMiddleware(object):
     def process_request(self, request, spider):
         user_agent = Faker().user_agent()
         request.headers['User-Agent'] = user_agent
+
     def process_response(self, request, response, spider):
         if response.status == 200:
             print(strftime("%Y-%m-%d %H:%M:%S", localtime()), f'\033[1;32;40m请求成功{response.url}\033[0m')
@@ -141,7 +142,6 @@ class RequestLOGDownloadMiddleware(object):
             return request
 
     def process_exception(self, request, exception, spider):
+        logger.error(f'错误信息为{exception}')
         logger.debug(f'重试{request.url}')
         return request
-
-
