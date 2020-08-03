@@ -1,49 +1,40 @@
 # -*- coding: utf-8 -*-
-import re
 import scrapy
-from mztu.items import MZtujpgItem
-
-start_urls = []
-for i in range(1, 244):
-    urls = f'https://www.mzitu.com/page/{i}/'
-    start_urls.append(urls)
+from mztu.items import MztuItem
+from scrapy.loader import ItemLoader
 
 
 class MezituSpider(scrapy.Spider):
     name = 'mezitu'
     allowed_domains = ['www.mzitu.com']
-    start_urls = start_urls
 
-    # start_urls = ['https://www.mzitu.com/page/243', 'https://www.mzitu.com/page/242', ]
-
-    # def start_requests(self):
-    #     start_urls = []
-    #     for i in range(1, 244):
-    #         urls = f'https://www.mzitu.com/page/{i}/'
-    #         start_urls.append(urls)
-    #     for url in start_urls:
-    #         yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
+    def start_requests(self):
+        start_urls = 'https://www.mzitu.com'
+        yield scrapy.Request(url=start_urls, callback=self.parse, dont_filter=True)
 
     def parse(self, response):
-        next_list = response.xpath('//div[@class="postlist"]/ul/li/a/@href').getall()
-        for url in next_list:
-            yield scrapy.Request(url=url, callback=self.parse_next, dont_filter=True)
-        # urls = response.xpath('//div[@class="nav-links"]/a/@href').get()
-        # print(urls)
-        # if urls:
-        #     yield scrapy.Request(url=urls, callback=self.parse, dont_filter=True)
+        number = response.xpath('//div[@class="nav-links"]/a//text()').getall()[-2]
+        urls = [f'https://www.mzitu.com/page/{i}/' for i in range(1, int(number) + 1)]
+        for url in urls:
+            yield scrapy.Request(url=url, callback=self.parse_list)
 
-    def parse_next(self, response):
-        title = response.xpath('//div[@class="content"]/h2[@class="main-title"]/text()').get()
-        try:
-            category = re.findall('(.*)（.*', title)[0]
-        except:
-            category = title
-        image = response.xpath('//div[@class="main-image"]/p/a/img/@src').get()
-        next_str = response.xpath('//div[@class="pagenavi"]/a/span/text()').getall()[-1]
-        file_urls = image
-        item = MZtujpgItem(category=category, file_urls=[file_urls])
-        yield item
-        if '下一页' in next_str:
-            url = response.xpath('//div[@class="pagenavi"]/a/@href').getall()[-1]
-            yield scrapy.Request(url=url, callback=self.parse_next, dont_filter=True)
+    def parse_list(self, response):
+        datalist = response.xpath('//div[@class="postlist"]/ul/li')
+        for data in datalist:
+            title = data.xpath('./span/a//text()').getall()
+            url = response.urljoin(data.xpath('./span/a/@href').get())
+            yield scrapy.Request(url=url, callback=self.parse_images, meta={'title': title})
+
+    def parse_images(self, response):
+        number = response.xpath('//div[@class="pagenavi"]/a//text()').getall()[-2]
+        urls = [f'{response.url}/{i}' for i in range(1, int(number) + 1)]
+        for url in urls:
+            yield scrapy.Request(url=url, callback=self.parse_item, dont_filter=True,
+                                 meta={'title': response.meta.get('title')})
+
+    def parse_item(self, response):
+        item = ItemLoader(item=MztuItem(), response=response)
+        item.add_value('title', response.meta.get('title'))
+        item.add_xpath('file_name', '//div[@class="content"]/h2[@class="main-title"]/text()')
+        item.add_xpath('file_urls', '//div[@class="content"]/div/p/a/img/@src')
+        yield item.load_item()

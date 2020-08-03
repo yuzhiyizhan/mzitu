@@ -6,10 +6,9 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import time
 import aiohttp
-from time import strftime, localtime
 from faker import Faker
-from scrapy import signals
 from loguru import logger
+from scrapy import signals
 
 
 class MztuSpiderMiddleware(object):
@@ -111,11 +110,6 @@ class UserAgentDownloadMiddleware(object):
     def process_request(self, request, spider):
         user_agent = Faker().user_agent()
         request.headers['User-Agent'] = user_agent
-
-    def process_response(self, request, response, spider):
-        if response.status == 200:
-            print(strftime("%Y-%m-%d %H:%M:%S", localtime()), f'\033[1;32;40m请求成功{response.url}\033[0m')
-            return response
 
 
 class IPProxyDownloadMiddleware(object):

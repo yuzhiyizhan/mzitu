@@ -27,15 +27,15 @@ ROBOTSTXT_OBEY = False
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32
 # 包括第一次下载，最多的重试次数
-RETRY_TIMES = 5
+RETRY_TIMES = 100
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
 DOWNLOAD_DELAY = 0
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS = 16
-CONCURRENT_REQUESTS_PER_DOMAIN = 16
-CONCURRENT_REQUESTS_PER_IP = 16
+CONCURRENT_REQUESTS = 64
+CONCURRENT_REQUESTS_PER_DOMAIN = 64
+CONCURRENT_REQUESTS_PER_IP = 64
 
 # Disable cookies (enabled by default)
 COOKIES_ENABLED = False
@@ -58,28 +58,26 @@ DOWNLOAD_TIMEOUT = 10
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'mztu.middlewares.MztuDownloaderMiddleware': 543,
-# }
+
 DOWNLOADER_MIDDLEWARES = {
     # 'mztu.middlewares.UserAgentDownloadMiddleware': 99,
     # 'mztu.middlewares.IPProxyDownloadMiddleware': 100,
-    'mztu.middlewares.IPProxyDownloadMiddleware': 543,
+    # 'mztu.middlewares.IPProxyDownloadMiddleware': 543,
     'mztu.middlewares.RequestLOGDownloadMiddleware': 544,
 }
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-# EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-# }
+EXTENSIONS = {
+    # 'scrapy.extensions.telnet.TelnetConsole': None,
+    'mztu.extensions.GeneralExtensions': 300,
+}
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     # 'scrapy.pipelines.images.ImagesPipeline': 1,
-    # 'mztu.pipelines.MZTImagesPipeline': 1,
     # 'scrapy.pipelines.files.FilesPipeline': 1,
-    'mztu.pipelines.MZFilesPipline': 1,
+    'mztu.pipelines.MztuPipeline': 1,
 }
 # IMAGES_STORE = 'MZtu'
 FILES_STORE = 'image'
