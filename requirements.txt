@@ -1,3 +1,5 @@
 scrapy
 faker
-requests
+aiohttp
+loguru
+Twisted

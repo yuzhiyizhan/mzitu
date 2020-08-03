@@ -118,31 +118,30 @@ class UserAgentDownloadMiddleware(object):
 
 
 class IPProxyDownloadMiddleware(object):
-    def process_request(self, request, spider):
-        while True:
-            proxies = requests.get(url='http://127.0.0.1:5555/https').text
-            if proxies == '43.255.228.150:3128':
-                sleep(30)
-                continue
-            user_agent = Faker().user_agent()
-            request.meta['proxy'] = 'https://' + proxies
-            request.headers['User-Agent'] = user_agent
-            break
+    async def process_request(self, request, spider):
+        async with aiohttp.ClientSession() as client:
+            while True:
+                responses = await client.get(url='http://127.0.0.1:5555/https')
+                proxies = await responses.text()
+                if proxies == '43.255.228.150:3128':
+                    time.sleep(30)
+                    continue
+                request.meta['proxy'] = 'https://' + proxies
+                logger.debug(f'使用代理{proxies}')
+                break
 
+
+class RequestLOGDownloadMiddleware(object):
     def process_response(self, request, response, spider):
-        if response.status != 200:
-            print(strftime("%Y-%m-%d %H:%M:%S", localtime()), f'\033[1;31;40m请求失败{response.url}\033[0m')
-            proxies = requests.get(url='http://127.0.0.1:5555/https').text
-            request.meta['proxy'] = 'https://' + proxies
-            return request
         if response.status == 200:
-            print(strftime("%Y-%m-%d %H:%M:%S", localtime()), f'\033[1;32;40m请求成功{response.url}\033[0m')
+            logger.debug(f'请求成功{response.url}')
             return response
+        else:
+            logger.error(f'请求失败{response.url}')
+            return request
 
     def process_exception(self, request, exception, spider):
-        print(strftime("%Y-%m-%d %H:%M:%S", localtime()), f'\033[1;31;40m重试{request.url}\033[0m')
-        proxies = requests.get(url='http://127.0.0.1:5555/https').text
-        request.meta['proxy'] = 'https://' + proxies
+        logger.debug(f'重试{request.url}')
         return request
 
 

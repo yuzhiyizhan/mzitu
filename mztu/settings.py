@@ -32,9 +32,9 @@ RETRY_TIMES = 5
 # See also autothrottle settings and docs
 DOWNLOAD_DELAY = 0
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS = 16
-CONCURRENT_REQUESTS_PER_DOMAIN = 16
-CONCURRENT_REQUESTS_PER_IP = 16
+CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS_PER_DOMAIN = 32
+CONCURRENT_REQUESTS_PER_IP = 32
 
 # Disable cookies (enabled by default)
 COOKIES_ENABLED = False
@@ -64,7 +64,9 @@ DOWNLOAD_TIMEOUT = 5
 # }
 DOWNLOADER_MIDDLEWARES = {
     # 'mztu.middlewares.UserAgentDownloadMiddleware': 99,
-    'mztu.middlewares.IPProxyDownloadMiddleware': 100,
+    # 'mztu.middlewares.IPProxyDownloadMiddleware': 100,
+    'mztu.middlewares.IPProxyDownloadMiddleware': 543,
+    'mztu.middlewares.RequestLOGDownloadMiddleware': 544,
 }
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
