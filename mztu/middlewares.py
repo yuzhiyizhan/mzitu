@@ -8,6 +8,7 @@ from time import strftime, localtime
 from faker import Faker
 from scrapy import signals
 from time import sleep
+from loguru import logger
 
 
 
