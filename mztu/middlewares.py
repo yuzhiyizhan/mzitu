@@ -7,7 +7,6 @@
 from time import strftime, localtime
 from faker import Faker
 from scrapy import signals
-import requests
 from time import sleep
 
 
